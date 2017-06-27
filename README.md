@@ -10,6 +10,8 @@ Ethereum node health checker and metrics exporter
 
 ## Usage
 
+```
 export ETH_NODE_URL=https://parity-etc.gatehub.net
 npm run start
 curl localhost:3000
+```
