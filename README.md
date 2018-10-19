@@ -19,4 +19,3 @@ curl localhost:3000
 ### Config options
 
 - `ETH_NODE_URL`: url of web3 rpc api
-- `ETH_LAST_BLOCK_SPAN`: span for last block

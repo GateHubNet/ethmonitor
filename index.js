@@ -2,25 +2,19 @@ const Web3 = require('web3');
 const Koa = require('koa');
 
 const url = process.env.ETH_NODE_URL || "http://localhost:8545";
-const lastBlockSpan = process.env.ETH_LAST_BLOCK_SPAN || 5;
 const app = new Koa();
-const web3 = new Web3(new Web3.providers.HttpProvider(url));
+const web3 = new Web3(new Web3.providers.HttpProvider(url, 10000)); // 10s timeout
 
 app.use(async function check(ctx) {
     try {
-        const block = await web3.eth.getBlock(web3.eth.blockNumber);
-        const time = new Date(block.timestamp * 1000);
+        const isSyncing = await web3.eth.isSyncing();
 
-        const checkTime = new Date(new Date().setMinutes(new Date().getMinutes() - lastBlockSpan));
-
-        console.log(`time ${time} > ${checkTime} = ${time > checkTime}`);
-
-        ctx.status = time > checkTime ? 200 : 412;
-        ctx.body = {block: web3.eth.blockNumber};
+        ctx.status = !isSyncing ? 200 : 412;
+        ctx.body = { isSyncing: isSyncing };
     } catch (err) {
         ctx.status = 500;
         ctx.body = {
-            error: err.toString()
+            error: err.toString(),
         };
     }
 });
